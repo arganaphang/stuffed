@@ -1,13 +1,17 @@
 import { Elysia, t } from "elysia";
+import { cors } from "@elysiajs/cors";
 import Redis from "ioredis";
 
 const redis = new Redis();
 
 const app = new Elysia()
+  .use(cors())
   .get(
     "/:increment",
     async ({ params: { increment } }) => {
-      const count = parseInt((await redis.get("count")) || "1") + increment;
+      const count =
+        parseInt((await redis.get("count")) || "1") +
+        parseInt(increment || "0");
       const result = await Promise.resolve({
         data: { count: count },
       });
@@ -16,7 +20,7 @@ const app = new Elysia()
     },
     {
       params: t.Object({
-        increment: t.Integer(),
+        increment: t.String(),
       }),
     },
   )
