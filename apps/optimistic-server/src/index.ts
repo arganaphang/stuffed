@@ -1,15 +1,19 @@
 import { Elysia } from "elysia";
+import Redis from "ioredis";
 
-let count = 1;
+const redis = new Redis();
 
 const app = new Elysia()
-  .get("/", () => {
-    const result = { data: { count: count } };
-    count++;
+  .get("/", async () => {
+    const count = parseInt((await redis.get("count")) || "1");
+    const result = await Promise.resolve({
+      data: { count: count },
+    });
+    await redis.set("count", count + 1);
     return result;
   })
   .listen(8000);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );
