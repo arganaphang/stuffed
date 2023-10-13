@@ -1,5 +1,6 @@
-import "@ui/styles/globals.css";
 import type { Metadata } from "next";
+import TanstackProvider from "@/components/providers/tanstack-provider";
+import "@ui/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Stuffed",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <TanstackProvider>{children}</TanstackProvider>
+      </body>
     </html>
   );
 }
